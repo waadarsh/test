@@ -1,4 +1,3 @@
-# main.py
 from fastapi import FastAPI, HTTPException, status, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
@@ -24,36 +23,22 @@ class LoginSchema(BaseModel):
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.uname == username).first()
 
-def authenticate_user(db: Session, credentials: HTTPBasicCredentials):
-    user = get_user(db, credentials.username)
-    if not user or user.password != credentials.password:
+def authenticate_user(db: Session, username: str, password: str):
+    user = get_user(db, username)
+    if not user or user.password != password:
         return None
     return user
 
-def get_current_user(credentials: HTTPBasicCredentials = Depends(security), db: Session = Depends(SessionLocal)):
-    user = authenticate_user(db, credentials)
+@app.post("/login")
+def login(login_schema: LoginSchema, db: Session = Depends(SessionLocal)):
+    user = authenticate_user(db, login_schema.username, login_schema.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Basic"}
         )
-    return user
-
-@app.post("/login")
-def login(credentials: HTTPBasicCredentials = Depends(security), db: Session = Depends(SessionLocal)):
-    user = get_current_user(credentials=credentials, db=db)
     return {"uname": user.uname, "role": user.role}
-
-@app.get("/admin/")
-def read_admin(user: User = Depends(get_current_user)):
-    if user.role != "admin":
-        raise HTTPException(status_code=403, detail="Not enough permissions")
-    return {"message": "Welcome to the Admin page."}
-
-@app.get("/user/")
-def read_user(user: User = Depends(get_current_user)):
-    return {"message": f"Hello, {user.uname}. You are a {user.role}."}
 
 if __name__ == "__main__":
     import uvicorn
