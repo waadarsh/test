@@ -13,11 +13,12 @@ const LoginPage = ({ authenticate }) => {
     setIsLoading(true);  // Show a loading indicator
 
     try {
-      // Calling the authenticate function passed from App.js
       await authenticate(username, password);
+      setPassword('');  // Clear password on success or failure for security
     } catch (error) {
       setError('Failed to login. Check your username and password.');
       setIsLoading(false);
+      setPassword('');  // Clear password on failure
     }
   };
 
@@ -25,7 +26,7 @@ const LoginPage = ({ authenticate }) => {
     <div className="login-form">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
-        {error && <p className="error">{error}</p>}
+        {error && <p className="error" aria-live="assertive">{error}</p>}
         <div className="form-group">
           <label htmlFor="username">Username:</label>
           <input
@@ -34,6 +35,7 @@ const LoginPage = ({ authenticate }) => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            autoFocus
           />
         </div>
         <div className="form-group">
