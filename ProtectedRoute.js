@@ -1,18 +1,14 @@
-// src/ProtectedRoute.js
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
-const ProtectedRoute = ({ component: Component, user, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      user ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to="/login" />
-      )
-    }
-  />
-);
+const ProtectedRoute = ({ component: Component, user, ...rest }) => {
+  const location = useLocation();
+
+  return user ? (
+    <Component {...rest} />
+  ) : (
+    <Navigate to="/login" replace state={{ from: location }} />
+  );
+};
 
 export default ProtectedRoute;
