@@ -9,16 +9,25 @@ import ProtectedRoute from './ProtectedRoute';
 const App = () => {
   const [user, setUser] = useState(null);
 
-const authenticate = (username, password) => {
-    axios.post('http://localhost:8000/login', { username, password })
-      .then(response => {
+ const authenticate = (username, password) => {
+    // Encode username and password in base64
+    const token = btoa(`${username}:${password}`);
+
+    axios({
+        method: 'post',
+        url: 'http://localhost:8000/login',
+        headers: {
+            'Authorization': `Basic ${token}`
+        }
+    })
+    .then(response => {
         setUser({ uname: response.data.uname, role: response.data.role });
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.error('Authentication failed:', error);
         alert('Authentication failed, check console for details.');
-      });
-  };
+    });
+ };
 
   const logout = () => {
     setUser(null); // Clear the user state
