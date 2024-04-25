@@ -9,8 +9,8 @@ import ProtectedRoute from './ProtectedRoute';
 const App = () => {
   const [user, setUser] = useState(null);
 
-  const authenticate = (username, password) => {
-    axios.get('http://localhost:8000/login', { auth: { username, password } })
+const authenticate = (username, password) => {
+    axios.post('http://localhost:8000/login', { username, password })
       .then(response => {
         setUser({ uname: response.data.uname, role: response.data.role });
       })
