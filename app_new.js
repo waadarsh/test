@@ -10,16 +10,10 @@ const App = () => {
   const [user, setUser] = useState(null);
 
  const authenticate = (username, password) => {
-    // Encode username and password in base64
-    const token = btoa(`${username}:${password}`);
-
-    axios({
-        method: 'post',
-        url: 'http://localhost:8000/login',
-        headers: {
-            'Authorization': `Basic ${token}`
-        }
-    })
+    axios.post('http://localhost:8000/login', { username, password })
+      .then(response => {
+        setUser({ uname: response.data.uname, role: response.data.role });
+      })
     .then(response => {
         setUser({ uname: response.data.uname, role: response.data.role });
     })
