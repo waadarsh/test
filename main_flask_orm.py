@@ -1,54 +1,48 @@
 from flask import Flask, request, jsonify, abort
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column
-from werkzeug.security import check_password_hash
 from flask_cors import CORS
+from pony.orm import Database, Required, PrimaryKey, db_session
+from werkzeug.security import generate_password_hash, check_password_hash
 
+# Initialize Flask app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Set up CORS
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
-# Base declarative class
-Base = declarative_base()
+# Setup Pony ORM Database
+db = Database()
 
-# Initialize SQLAlchemy with the declarative base
-db = SQLAlchemy(app, model_class=Base)
+class User(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    uname = Required(str, unique=True)
+    password = Required(str)
+    admin = Required(bool)
 
-class User(Base):
-    __tablename__ = 'users'
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(db.String(80), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(db.String(120), nullable=False)
-    role: Mapped[str] = mapped_column(db.String(80))
+    @staticmethod
+    def get_user_by_username(uname):
+        return User.get(uname=uname)
 
-    def to_dict(self):
-        return {"username": self.username, "role": self.role}
+    @staticmethod
+    def authenticate_user(uname, password):
+        user = User.get_user_by_username(uname)
+        if user and check_password_hash(user.password, password):
+            return user
+        return None
 
-def get_user(username):
-    return User.query.filter_by(username=username).first()
-
-def authenticate_user(username, password):
-    user = get_user(username)
-    if user and check_password_hash(user.password, password):
-        return user
-    return None
+# Bind and create the database
+db.bind(provider='sqlite', filename='test.db', create_db=True)
+db.generate_mapping(create_tables=True)
 
 @app.route('/login', methods=['POST'])
+@db_session
 def login():
     data = request.get_json()
-    username = data.get('username')
+    uname = data.get('uname')
     password = data.get('password')
-    if not username or not password:
+    if not uname or not password:
         abort(400, description="Missing username or password")
-    user = authenticate_user(username, password)
+    user = User.authenticate_user(uname, password)
     if not user:
         abort(401, description="Incorrect username or password")
-    return jsonify(user.to_dict())
+    return jsonify(username=user.uname, admin=user.admin)
 
 if __name__ == "__main__":
-    with app.app_context():
-        Base.metadata.create_all(bind=db.engine)  # Create tables
     app.run(host="0.0.0.0", port=8000, debug=True)
