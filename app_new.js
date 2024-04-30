@@ -11,9 +11,6 @@ const App = () => {
 
  const authenticate = (username, password) => {
     axios.post('http://localhost:8000/login', { username, password })
-      .then(response => {
-        setUser({ uname: response.data.uname, role: response.data.role });
-      })
     .then(response => {
         setUser({ uname: response.data.uname, role: response.data.role });
     })
