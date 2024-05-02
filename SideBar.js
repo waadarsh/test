@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
-import { Collapse, Button, CardBody, Card, Nav, NavItem, NavLink } from 'reactstrap';
+import { Button, Nav, NavItem, NavLink } from 'reactstrap';
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggle = () => setIsOpen(!isOpen);
+  const toggleSidebar = () => setIsExpanded(!isExpanded);
 
   return (
-    <div>
-      <Button color="primary" onClick={toggle} style={{ marginBottom: '1rem' }}>Toggle</Button>
-      <Collapse isOpen={isOpen}>
-        <Card>
-          <CardBody>
-            <Nav vertical>
-              <NavItem>
-                <NavLink href="#">Dashboard</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="#">Profiles</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="#">Settings</NavLink>
-              </NavItem>
-              {/* You can add more NavItems here */}
-            </Nav>
-          </CardBody>
-        </Card>
-      </Collapse>
+    <div style={{
+      width: isExpanded ? '250px' : '50px',
+      minHeight: '100vh',
+      backgroundColor: '#f8f9fa',
+      transition: 'width 0.3s',
+      position: 'fixed', // keeps the sidebar fixed during page scroll
+    }}>
+      <Button onClick={toggleSidebar} style={{ margin: '10px', width: '30px' }}>≡</Button>
+      <Nav vertical>
+        <NavItem>
+          <NavLink href="#" style={{ display: isExpanded ? 'block' : 'none' }}>Dashboard</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="#" style={{ display: isExpanded ? 'block' : 'none' }}>Profiles</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="#" style={{ display: isExpanded ? 'block' : 'none' }}>Settings</NavLink>
+        </NavItem>
+        {/* Add more NavItems as needed */}
+      </Nav>
     </div>
   );
 };
