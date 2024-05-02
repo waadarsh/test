@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Collapse,
   Navbar,
@@ -25,21 +25,23 @@ const Sidebar = ({ isOpen, toggle }) => {
       position: 'fixed', // keeps the sidebar fixed during page scroll
     }}>
       <Navbar color="faded" light>
-        <NavbarBrand href="/" className="mr-auto">Bootstrap Sidebar</NavbarBrand>
+        <NavbarBrand href="/" className="mr-auto">
+          {isOpen && 'Bootstrap Sidebar'}
+        </NavbarBrand>
         <NavbarToggler onClick={toggle} className="mr-2">
           <FaBars style={{ color: 'white' }} />
         </NavbarToggler>
         <Collapse isOpen={isOpen} navbar>
           <Nav navbar>
             <NavItem>
-              <NavLink href="#"><FaHome /> Home</NavLink>
+              <NavLink href="#"><FaHome /> {isOpen && 'Home'}</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#"><FaUser /> About</NavLink>
+              <NavLink href="#"><FaUser /> {isOpen && 'About'}</NavLink>
             </NavItem>
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
-                <FaBook /> Pages
+                <FaBook /> {isOpen && 'Pages'}
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem>
@@ -51,10 +53,10 @@ const Sidebar = ({ isOpen, toggle }) => {
               </DropdownMenu>
             </UncontrolledDropdown>
             <NavItem>
-              <NavLink href="#"><FaQuestion /> FAQ</NavLink>
+              <NavLink href="#"><FaQuestion /> {isOpen && 'FAQ'}</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#"><FaEnvelope /> Contact</NavLink>
+              <NavLink href="#"><FaEnvelope /> {isOpen && 'Contact'}</NavLink>
             </NavItem>
           </Nav>
         </Collapse>
