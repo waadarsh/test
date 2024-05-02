@@ -23,7 +23,7 @@ const App = () => {
   const logout = () => {
     setUser(null); // Clear the user state
     // Prevent going back to the last authenticated route
-    window.history.pushState(null, null, window.location.href);
+    window.location.href = '/login'
   };
 
   return (
