@@ -9,18 +9,15 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-  Button
+  DropdownItem
 } from 'reactstrap';
-import { FaRegEdit, FaBookOpen, FaThumbsUp, FaChartBar, FaBars } from 'react-icons/fa';
+import { FaRegEdit, FaBookOpen, FaThumbsUp, FaChartBar } from 'react-icons/fa';
 
-const Sidebar = ({ isOpen, toggle, logout }) => {
+const Sidebar = ({ isOpen }) => {
   return (
     <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
       width: isOpen ? '250px' : '60px',
+      minHeight: '100vh',
       backgroundColor: '#343a40',
       color: 'white',
       transition: 'width 0.3s',
@@ -28,10 +25,9 @@ const Sidebar = ({ isOpen, toggle, logout }) => {
       overflowX: 'hidden'
     }}>
       <Navbar color="dark" dark>
-        <NavbarBrand href="/" className="mr-auto" style={{ display: isOpen ? 'block' : 'none' }}>Reactstrap</NavbarBrand>
-        <NavbarToggler onClick={toggle} className="mr-2" style={{ border: 'none' }}>
-          <FaBars style={{ color: 'white' }} />
-        </NavbarToggler>
+        <NavbarBrand href="/" className="mr-auto" style={{ display: isOpen ? 'block' : 'none' }}>
+          Reactstrap
+        </NavbarBrand>
         <Collapse isOpen={isOpen} navbar>
           <Nav vertical>
             <NavItem>
@@ -59,9 +55,6 @@ const Sidebar = ({ isOpen, toggle, logout }) => {
           </Nav>
         </Collapse>
       </Navbar>
-      <div style={{ marginTop: 'auto', padding: '10px' }}>
-        <Button onClick={logout} style={{ width: '100%', backgroundColor: '#343a40', borderColor: '#343a40' }}>Logout</Button>
-      </div>
     </div>
   );
 };
