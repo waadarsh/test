@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, toggle }) => {
     }}>
       <Navbar color="dark" dark>
         <NavbarBrand href="/" className="mr-auto" style={{ display: isOpen ? 'block' : 'none' }}>
-          DigiRap
+          Reactstrap
         </NavbarBrand>
         <NavbarToggler onClick={toggle} className="mr-2" style={{ border: 'none' }}>
           <FaBars style={{ color: 'white' }} />
