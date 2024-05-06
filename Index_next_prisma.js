@@ -53,3 +53,47 @@ export default function Home() {
         </>
     );
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import LoginPage from '../components/LoginPage';
+import AdminPage from '../components/AdminPage';
+import UserPage from '../components/UserPage';
+import Navigate from '../components/Navigate';
+import axios from 'axios';
+
+export default function Home() {
+    const router = useRouter();
+    const [user, setUser] = useState(() => {
+        const savedUser = sessionStorage.getItem('user');
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem('user', user ? JSON.stringify(user) : '');
+    }, [user]);
+
+    const authenticate = async (username, password) => {
+        try {
+            const response = await axios.post('/api/login', { username, password });
+            setUser({ uname: response.data.uname, role: response.data.role.toLowerCase() });
+        } catch (error) {
+            console.error('Authentication failed:', error);
+            alert('Authentication failed. Check the console for details.');
+        }
+    };
+
+    const logout = () => {
+        setUser(null);
+        sessionStorage.removeItem('user');
+        router.push('/login');
+    };
+
+    if (!user) {
+        return <LoginPage authenticate={authenticate} />;
+    }
+
+    return <Navigate user={user} logout={logout} />;
+}
+
