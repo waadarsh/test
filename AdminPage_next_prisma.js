@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container } from 'reactstrap';
+import { Container, Button } from 'reactstrap';
 import { useRouter } from 'next/router';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
@@ -40,6 +40,9 @@ const AdminPage = ({ user, logout }) => {
                 }}
             >
                 <Topbar toggleSidebar={toggle} />
+                <Button onClick={toggle} style={{ marginBottom: '10px' }}>
+                    Toggle Sidebar
+                </Button>
                 <h2>Admin Dashboard</h2>
                 <p>Welcome, {user.uname}. You have administrative access.</p>
                 <ComponentToRender />
