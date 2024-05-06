@@ -1,0 +1,76 @@
+// langchain js code server
+// /pages/api/langchain.js
+
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { BufferMemory } from "langchain/memory";
+import { ConversationChain } from "langchain/chains";
+import { OpenAI } from "langchain";
+
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    try {
+      const { userInput } = req.body;
+
+      // Initialize OpenAI API
+      const chat = new ChatOpenAI({
+        temperature: 0,
+        openAIApiKey: process.env.OPENAI_API_KEY,
+      });
+
+      // Initialize the conversation chain
+      const memory = new BufferMemory();
+      const chain = new ConversationChain({ llm: chat, memory: memory });
+
+      // Generate a response
+      const response = await chain.call({ input: userInput });
+
+      res.status(200).json({ response: response.response });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  } else {
+    res.status(405).json({ error: "Method Not Allowed" });
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// React code
+// pages/index.js
+
+import { useState } from "react";
+
+export default function Home() {
+  const [userInput, setUserInput] = useState("");
+  const [response, setResponse] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await fetch("/api/langchain", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userInput }),
+    });
+    const data = await res.json();
+    setResponse(data.response);
+  };
+
+  return (
+    <div>
+      <h1>LangChain + Next.js</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          placeholder="Type something..."
+        />
+        <button type="submit">Send</button>
+      </form>
+      {response && <p>Response: {response}</p>}
+    </div>
+  );
+}
