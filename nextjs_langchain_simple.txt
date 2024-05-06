@@ -40,6 +40,7 @@ export default async function handler(req, res) {
 // pages/index.js
 
 import { useState } from "react";
+import axios from "axios";
 
 export default function Home() {
   const [userInput, setUserInput] = useState("");
@@ -47,15 +48,15 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/langchain", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userInput }),
-    });
-    const data = await res.json();
-    setResponse(data.response);
+    try {
+      const res = await axios.post("/api/langchain", {
+        userInput,
+      });
+      setResponse(res.data.response);
+    } catch (error) {
+      console.error(error);
+      setResponse("Error: Could not fetch response.");
+    }
   };
 
   return (
@@ -74,3 +75,4 @@ export default function Home() {
     </div>
   );
 }
+
