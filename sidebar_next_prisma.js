@@ -14,7 +14,7 @@ const Sidebar = ({ isOpen, logout }) => {
                     </NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink href="#" onClick={() => router.push('/admin/reports')}>
+                    <NavLink href="#" onClick={() to="/" => router.push('/admin/reports')}>
                         Reports
                     </NavLink>
                 </NavItem>
