@@ -8,36 +8,22 @@ import ProtectedRoute from './ProtectedRoute';
 
 const App = () => {
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
+    const savedUser = sessionStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      sessionStorage.setItem('user', JSON.stringify(user));
     } else {
-      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
     }
-
-    const clearUser = (event) => {
-      if (localStorage.getItem('user')) {
-        localStorage.removeItem('user');
-        event.preventDefault();  // Standard way to prevent closing
-        event.returnValue = '';  // Some browsers also require setting returnValue
-      }
-    };
-
-    window.addEventListener('beforeunload', clearUser);
-
-    return () => {
-      window.removeEventListener('beforeunload', clearUser);
-    };
   }, [user]);
 
   const authenticate = async (username, password) => {
     try {
       const response = await axios.post('http://localhost:8000/login', { username, password });
-      setUser({ uname: response.data.uname, role: response.data.role });
+      setUser({ uname: response.data.uname, role: response.data.role.toLowerCase() });
     } catch (error) {
       console.error('Authentication failed:', error);
       alert('Authentication failed, check console for details.');
@@ -46,7 +32,7 @@ const App = () => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
     window.location.href = '/login';
   };
 
