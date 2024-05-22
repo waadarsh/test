@@ -58,7 +58,7 @@ const Report = () => {
   return (
     <div>
       <Card className="custom-card" style={{ maxHeight: "450px", overflow: "auto" }}>
-        <Form inline onSubmit={handleFilterSubmit} style={{ padding: "10px" }}>
+        <Form inline onSubmit={handleFilterSubmit} style={{ padding: "10px", display: 'flex', gap: '10px' }}>
           <FormGroup>
             <Label for="firstNameFilter" className="mr-sm-2">First Name</Label>
             <Input
