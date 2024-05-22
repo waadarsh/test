@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Pagination, PaginationItem, PaginationLink, Input, Button, Form, FormGroup, Label } from 'reactstrap';
 import axios from 'axios';
+import './Report.css'; // Make sure to import the CSS file
 
 const Report = () => {
   const [tokens, setTokens] = useState([]);
@@ -56,9 +57,9 @@ const Report = () => {
   const totalPages = Math.ceil(totalRecords / perPage);
 
   return (
-    <div>
-      <Card className="custom-card" style={{ maxHeight: "450px", overflow: "auto" }}>
-        <Form inline onSubmit={handleFilterSubmit} style={{ padding: "10px", display: 'flex', gap: '10px' }}>
+    <div className="report-container">
+      <Card className="custom-card">
+        <Form inline onSubmit={handleFilterSubmit} className="filter-form">
           <FormGroup>
             <Label for="firstNameFilter" className="mr-sm-2">First Name</Label>
             <Input
@@ -93,51 +94,55 @@ const Report = () => {
           <Button type="button" color="secondary" onClick={handleFilterClear}>Clear Filters</Button>
         </Form>
         {tokens.length > 0 ? (
-          <Table hover>
-            <thead>
-              <tr>
-                <th>First Name</th>
-                <th>Usage Timestamp</th>
-                <th>Tokens Used</th>
-                <th>Prompt Tokens</th>
-                <th>Completion Tokens</th>
-                <th>Successful Requests</th>
-                <th>Model</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tokens.map((user, index) => (
-                <tr key={index}>
-                  <td>{user.FirstName}</td>
-                  <td>{new Date(user.UsageTimestamp).toLocaleString()}</td>
-                  <td>{user.TokensUsed}</td>
-                  <td>{user.PromptTokens}</td>
-                  <td>{user.CompletionTokens}</td>
-                  <td>{user.SuccessfulRequests}</td>
-                  <td>{user.ModelName}</td>
+          <div className="table-container">
+            <Table hover>
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Usage Timestamp</th>
+                  <th>Tokens Used</th>
+                  <th>Prompt Tokens</th>
+                  <th>Completion Tokens</th>
+                  <th>Successful Requests</th>
+                  <th>Model</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {tokens.map((user, index) => (
+                  <tr key={index}>
+                    <td>{user.FirstName}</td>
+                    <td>{new Date(user.UsageTimestamp).toLocaleString()}</td>
+                    <td>{user.TokensUsed}</td>
+                    <td>{user.PromptTokens}</td>
+                    <td>{user.CompletionTokens}</td>
+                    <td>{user.SuccessfulRequests}</td>
+                    <td>{user.ModelName}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         ) : (
-          <div style={{ padding: "10px" }}>No data available for the applied filters.</div>
+          <div className="no-data">No data available for the applied filters.</div>
         )}
       </Card>
-      <Pagination aria-label="Page navigation example">
-        <PaginationItem disabled={page <= 1}>
-          <PaginationLink previous onClick={() => handlePageChange(page - 1)} />
-        </PaginationItem>
-        {[...Array(totalPages).keys()].map((pageNumber) => (
-          <PaginationItem active={pageNumber + 1 === page} key={pageNumber}>
-            <PaginationLink onClick={() => handlePageChange(pageNumber + 1)}>
-              {pageNumber + 1}
-            </PaginationLink>
+      <div className="pagination-container">
+        <Pagination aria-label="Page navigation example">
+          <PaginationItem disabled={page <= 1}>
+            <PaginationLink previous onClick={() => handlePageChange(page - 1)} />
           </PaginationItem>
-        ))}
-        <PaginationItem disabled={page >= totalPages}>
-          <PaginationLink next onClick={() => handlePageChange(page + 1)} />
-        </PaginationItem>
-      </Pagination>
+          {[...Array(totalPages).keys()].map((pageNumber) => (
+            <PaginationItem active={pageNumber + 1 === page} key={pageNumber}>
+              <PaginationLink onClick={() => handlePageChange(pageNumber + 1)}>
+                {pageNumber + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem disabled={page >= totalPages}>
+            <PaginationLink next onClick={() => handlePageChange(page + 1)} />
+          </PaginationItem>
+        </Pagination>
+      </div>
     </div>
   );
 };
