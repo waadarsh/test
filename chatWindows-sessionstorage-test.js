@@ -1,12 +1,24 @@
 <ListGroup>
                         {messages.map(msg => (
-                            <ListGroupItem key={msg.id} className={`mb-1 px-1 py-2 d-flex ${msg.sender === 'user' ? 'justify-content-end bg-light' : 'justify-content-start bg-secondary text-white'}`}>
-                                {msg.sender === 'ai' ? (
-                                    <img src={nissanLogo} alt="Nissan Logo" style={{ width: '30px', height: '30px', marginRight: '10px' }} />
-                                ) : (
-                                    <img src={userAvatar} alt="User Avatar" style={{ width: '30px', height: '30px', marginLeft: '10px' }} />
-                                )}
-                                <span className="align-self-center">{msg.text}</span>
+                            <ListGroupItem key={msg.id} className="mb-1 px-1 py-2">
+                                <Row>
+                                    <Col xs="1">
+                                        <Card className="logo-next-line">
+                                            {msg.sender === 'ai' ? (
+                                                <img src={nissanLogo} alt="Nissan Logo" className="small-logo" />
+                                            ) : (
+                                                <img src={userAvatar} alt="User Avatar" className="small-logo" />
+                                            )}
+                                        </Card>
+                                    </Col>
+                                    <Col xs="10">
+                                        <Card className={`mt-2 ${msg.sender === 'ai' ? 'bot-custom' : 'user-custom'}`}>
+                                            <div className={msg.sender === 'ai' ? 'bot-custom-text' : 'user-custom-text'}>
+                                                {msg.text}
+                                            </div>
+                                        </Card>
+                                    </Col>
+                                </Row>
                             </ListGroupItem>
                         ))}
                         <div ref={messagesEndRef} />
