@@ -33,6 +33,7 @@ const Report = () => {
 
   useEffect(() => {
     fetchTokens(page, firstNameFilter, dateFilter, modelFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, firstNameFilter, dateFilter, modelFilter]);
 
   const handlePageChange = (pageNumber) => {
