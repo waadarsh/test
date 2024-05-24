@@ -56,7 +56,7 @@ def token_usage():
     else:
         summary = None
 
-    departments = select(d.DeptName for d in Department)[:]
+    departments = [d.DeptName for d in Department.select()]
 
     return jsonify({
         'total_records': total_records,
