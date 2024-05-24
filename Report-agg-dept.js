@@ -123,7 +123,7 @@ const Report = () => {
             <p>Total Tokens Used: {summary.total_tokens_used}</p>
             <p>Total Prompt Tokens: {summary.total_prompt_tokens}</p>
             <p>Total Completion Tokens: {summary.total_completion_tokens}</p>
-            <p>Total Successful Requests: {summary.total_successful_requests}</p>
+            <p>Total Price: {summary.total_price}</p>
           </div>
         )}
         {tokens.length > 0 ? (
@@ -136,7 +136,7 @@ const Report = () => {
                   <th>Tokens Used</th>
                   <th>Prompt Tokens</th>
                   <th>Completion Tokens</th>
-                  <th>Successful Requests</th>
+                  <th>Total Price</th>
                   <th>Model</th>
                   <th>Department</th>
                 </tr>
@@ -149,7 +149,7 @@ const Report = () => {
                     <td>{user.TokensUsed}</td>
                     <td>{user.PromptTokens}</td>
                     <td>{user.CompletionTokens}</td>
-                    <td>{user.SuccessfulRequests}</td>
+                    <td>{user.TotalCost}</td>
                     <td>{user.ModelName}</td>
                     <td>{user.Department}</td>
                   </tr>
