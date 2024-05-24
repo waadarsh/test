@@ -46,12 +46,12 @@ def token_usage():
         total_tokens_used = sum(usage.TokensUsed for usage in query)
         total_prompt_tokens = sum(usage.PromptTokens for usage in query)
         total_completion_tokens = sum(usage.CompletionTokens for usage in query)
-        total_successful_requests = sum(usage.SuccessfulRequests for usage in query)
+        total_price = sum(usage.TotalCost for usage in query)
         summary = {
             'total_tokens_used': total_tokens_used,
             'total_prompt_tokens': total_prompt_tokens,
             'total_completion_tokens': total_completion_tokens,
-            'total_successful_requests': total_successful_requests
+            'total_price': total_price
         }
     else:
         summary = None
