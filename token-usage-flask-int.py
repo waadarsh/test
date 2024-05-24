@@ -10,6 +10,7 @@ def token_usage():
     first_name_filter = request.args.get('first_name')
     date_filter = request.args.get('date')
     model_filter = request.args.get('model')
+    department_filter = request.args.get('department')
 
     query = select(t for t in TokenUsage)
 
@@ -21,6 +22,9 @@ def token_usage():
 
     if model_filter:
         query = query.where(lambda t: t.ModelName == model_filter)
+
+    if department_filter:
+        query = query.where(lambda t: t.Uid.DeptId.DeptName == department_filter)
 
     total_records = query.count()
     usage_records = query.order_by(desc(TokenUsage.UsageTimestamp))[(page - 1) * per_page: page * per_page]
@@ -34,7 +38,8 @@ def token_usage():
         'PromptTokens': usage.PromptTokens,
         'CompletionTokens': usage.CompletionTokens,
         'ModelName': usage.ModelName,
-        'TotalCost': usage.TotalCost
+        'TotalCost': usage.TotalCost,
+        'Department': usage.Uid.DeptId.DeptName
     } for usage in usage_records]
 
     if date_filter:
@@ -51,10 +56,13 @@ def token_usage():
     else:
         summary = None
 
+    departments = select(d.DeptName for d in Department)[:]
+
     return jsonify({
         'total_records': total_records,
         'page': page,
         'per_page': per_page,
         'data': response_data,
-        'summary': summary
+        'summary': summary,
+        'departments': departments
     }), 200
