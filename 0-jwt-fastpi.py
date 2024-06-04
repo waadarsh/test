@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Request, status, Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from pony.orm import Database, Required, Set, PrimaryKey, db_session, commit, select, desc
 from datetime import datetime, timedelta
 import uuid
@@ -10,7 +10,6 @@ from langchain_core.messages import AIMessage, HumanMessage
 import random
 from fastapi.middleware.cors import CORSMiddleware
 import jwt
-from pydantic import BaseModel
 
 # JWT configuration
 SECRET_KEY = "your_secret_key"
@@ -121,20 +120,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     return user
 
-class LoginData(BaseModel):
-    email: str
-    password: str
-
 # Endpoints
 @app.post("/login", status_code=status.HTTP_200_OK)
-async def login(login_data: LoginData):
+async def login(request: Request):
+    data = await request.json()
+    email = data.get('email')
+    password = data.get('password')
+    
     with db_session:
-        user = User.get(Email=login_data.email)
+        user = User.get(Email=email)
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
         if not user.IsActive:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Inactive user")
-        user_credential = UserCredential.get(Uid=user.Uid, Password=login_data.password)
+        user_credential = UserCredential.get(Uid=user.Uid, Password=password)
         if not user_credential:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
         
@@ -414,4 +413,4 @@ async def new_chat(request: Request, current_user: User = Depends(get_current_us
     }
 
 if __name__ == "__main__":
-    uvicorn.run("fastapi_orm_jwt:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run("fastapi_orm:app", host="127.0.0.1", port=8000, reload=False)
