@@ -92,7 +92,7 @@ db.bind(provider='postgres', user='postgres', password='nissan', host='localhost
 db.generate_mapping(create_tables=True)
 
 # JWT utilities
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
@@ -121,7 +121,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return user
 
 # Endpoints
-@app.post("/token", status_code=status.HTTP_200_OK)
+@app.post("/login", status_code=status.HTTP_200_OK)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     with db_session:
         user = User.get(Email=form_data.username)
