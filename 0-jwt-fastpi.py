@@ -10,6 +10,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 import random
 from fastapi.middleware.cors import CORSMiddleware
 import jwt
+from pydantic import BaseModel
 
 # JWT configuration
 SECRET_KEY = "your_secret_key"
@@ -120,16 +121,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     return user
 
+class LoginData(BaseModel):
+    email: str
+    password: str
+
 # Endpoints
 @app.post("/login", status_code=status.HTTP_200_OK)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(login_data: LoginData):
     with db_session:
-        user = User.get(Email=form_data.username)
+        user = User.get(Email=login_data.email)
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
         if not user.IsActive:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Inactive user")
-        user_credential = UserCredential.get(Uid=user.Uid, Password=form_data.password)
+        user_credential = UserCredential.get(Uid=user.Uid, Password=login_data.password)
         if not user_credential:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
         
@@ -409,4 +414,4 @@ async def new_chat(request: Request, current_user: User = Depends(get_current_us
     }
 
 if __name__ == "__main__":
-    uvicorn.run("fastapi_orm:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run("fastapi_orm_jwt:app", host="127.0.0.1", port=8000, reload=False)
